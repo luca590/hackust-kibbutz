@@ -44,7 +44,7 @@ app.controller("EducationController", ['$scope', function ($scope) {
       time: "1 day",
       raised: 50000,
       goal: 80000,
-      id: 0
+      id: 0,
     },
     {
       name: "Provide new chairs and tables to a school in Cambodia	",
@@ -76,6 +76,7 @@ app.controller("EducationController", ['$scope', function ($scope) {
       }
     ]
   $scope.icon = "http://smallbusinessbc.ca/wp-content/uploads/2015/04/icon-education.png"
+  $scope.total_contribution = 1500000000
 }])
 
 app.controller("CommunityController", ['$scope', function ($scope) {
