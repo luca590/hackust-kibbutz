@@ -1,1 +1,39 @@
-<h>hello</h>
+<h1>{{name}}</h1>
+
+<table cellspacing="10">
+    <tr>
+        <th>Time left</th>
+        <th>Money raised</th>
+        <th>Goal</th>
+        <th>Voting Status</th>
+    </tr>
+    <tr>
+        <td align="position" valign="position">{{time}}</td>
+        <td align="position" valign="position">{{raised}}</td>
+        <td align="position" valign="position">{{goal}}</td>
+        <td align="position" valign="position">{{voting_status}}</td>
+    </tr>
+</table>
+
+<form id="donateForm" ng-submit="donate()">
+    <table class="table table-striped table-bordered">
+        <tr>
+            <td><input type="number" class="form-control" ng-model="donationAmount" required/></td>
+            <td><input type="submit" class="btn btn-primary addnew" value="Donate"></td>
+        </tr>
+    </table>
+</form>
+
+<form id="operatorForm" ng-submit="vote()">
+    <table class="table table-striped table-bordered">
+        <tr>
+            <td>
+                <select name="Vote" ng-model="approve" required>
+                <option value="0">0 - reject</option>
+                <option value="1">1 - approve</option>
+              </select>
+            </td>
+            <td><input type="submit" class="btn btn-primary addnew pull-right" value="Vote"></td>
+        </tr>
+    </table>
+</form>
