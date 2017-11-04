@@ -1,6 +1,5 @@
 
 <div class="conter-wrapper home-container">
-  {{ test }}
   <div class="row home-row">
     <div class="col-md-6">
       <div class="panel panel-primary" ng-repeat="c in communities">
@@ -45,23 +44,62 @@
 	  
 	  <h4>Details:</h4>
 	  <table class="table">
-	      <tr>
-		<td>Total Funds</td>
-		<td>{{ community.total }}</td>
-	      </tr>
-	      <tr>
-		<td>Your Contribution</td>
-		<td>0 USD</td>
-	      </tr>
-	      <tr>
-		<td>Total Members</td>
-		<td>{{ community.members }}</td>
-	      </tr>
+	    <tr>
+	      <td>Total Funds</td>
+	      <td>{{ community.total }}</td>
+	    </tr>
+	    <tr>
+	      <td>Your Contribution</td>
+	      <td>0 USD</td>
+	    </tr>
+	    <tr>
+	      <td>Total Members</td>
+	      <td>{{ community.members }}</td>
+	    </tr>
 	  </table>
-	  
-	  <h4>Projects</h4>
 
+	    <button type="button" class="btn btn-primary btn-rounded">
+	      Donate
+	    </button>
+	    <button type="button" class="btn btn-primary btn-rounded disabled">
+	      Propose Project
+	    </button>
+	    <button type="button" class="btn btn-primary btn-rounded disabled">
+	      Delegate Vote
+	    </button> 
+	    <br />
+	    <br />
+	    <br />
 	  
+	  <div class="panel panel-primary">
+	    <div class="panel-heading">
+	      <h3 class="panel-title">Projects</h3>
+	    </div>
+	    <div class="panel-body">
+	      <table class="table">
+		<thead>
+		  <tr>
+		    <th>Name</th>
+		    <th>Budget</th>
+		    <th>Status</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  <tr>
+		    <td>Test 1</td>
+		    <td>500 USD</td>
+		    <td>VOTING</td>
+		  </tr>
+		  <tr>
+		    <td>Test 2</td>
+		    <td>1500 USD</td>
+		    <td>APPROVED</td>
+		  </tr>
+		</tbody>
+	      </table>			
+	    </div>
+	  </div>
+
 	</div>
       </div>
     </div>
