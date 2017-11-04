@@ -1,4 +1,6 @@
-<h1>Education</h1>
+<h1>{{community_name}}</h1>
+<p><button ng-click='todo()'>Donate</button></p>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6">
@@ -6,20 +8,23 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h4>Proposals</h4>
-                    <input type="submit" class="btn btn-primary addnew" value="Create New Proposal">
+                    <button ng-click='createProposal()'>Create new Proposal</button>
+                    <!--<input type="submit" class="btn btn-primary addnew" value="Create New Proposal">-->
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Name</th>
                                 <th>Time left</th>
                                 <th>raised/goal</th>
+                                <th>voting status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="p in proposals">
-                                <td><a href="#!/proposals/{{p.id}}">{{p.name}}</a></td>
+                                <td><a href="#!/communities/{{id}}/{{p.id}}">{{p.name}}</a></td>
                                 <td>{{p.time}}</td>
                                 <td>{{p.raised}}/{{p.goal}}</td>
+                                <td>{{p.voting_status}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -30,6 +35,7 @@
             <img src="{{icon}}">
         </div>
     </div>
+</div>
 </div>
 
 <div class="container-fluid">
@@ -58,6 +64,8 @@
         <div style="float:right; margin-right:20px">
             <h4>Total donations</h4>
             <p>{{total_contribution}}</p>
+            <h4>amount of members</h4>
+            <p>{{member_amount}}</p>
         </div>
         </style>
     </div>
