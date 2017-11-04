@@ -176,7 +176,8 @@ angular
     .state('calendar', {
         url: '/calendar',
         parent: 'dashboard',
-        templateUrl: 'views/pages/dashboard/calendar.html?v='+window.app_version
+        templateUrl: 'views/pages/dashboard/calendar.html?v='+window.app_version,
+	conntroller: 'ProjCtrl'
     })
     .state('invoice', {
         url: '/invoice',

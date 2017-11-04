@@ -1,8 +1,105 @@
-<pageheader pagename="Calendar" subtitle="Full Calendar widget"></pageheader>
 <div class="conter-wrapper">
-	<div class="panel panel-default">
-		<div class="panel-body" ng-controller="calendarCtrl">
-			<div ui-calendar ng-model="eventSources"></div>
-		</div>
+  <div class="row home-row">
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+	<div class="panel-heading">
+	  <h3 class="panel-title">Project: {{ name }}</h3>
 	</div>
+	<div class="panel-body">
+	  {{ desc }}
+	  <div class="panel-btn">
+	    <button type="button" class="btn btn-primary pull-right btn-rounded" ng-click="setActive(c.id)">
+	      Contribute</button> 
+	  </div>
+	</div>
+      </div>
+
+      <div class="panel panel-primary">
+	<div class="panel-heading">
+	  <h3 class="panel-title">Project details:</h3>
+	</div>
+	<div class="panel-body">
+
+	  <table class="table">
+	    <tr>
+	      <td>Budget</td>
+	      <td width="60%">500 USD</td>
+	    </tr>
+	    <tr>
+	      <td>Status</td>
+	      <td width="60%">VOTING</td>
+	    </tr>
+	    <tr>
+	      <td>Voting Progress</td>
+	      <td><progressbar value="63">63%</progressbar></td>
+	    </tr>
+	    <tr>
+	      <td>Voting Results</td>
+	      <td><progress><bar value="30" type="success"></bar><bar value="3" type="danger"></bar></progress></td>
+	    </tr>
+	  </table>
+
+	  <button type="button" class="btn btn-success btn-rounded">Vote for</button>
+	  <button type="button" class="btn btn-danger btn-rounded">Vote against</button>
+	</div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="panel panel-info">
+	<div class="panel-heading">
+	  <h3 class="panel-title">Smart Contract</h3>
+	</div>
+	<div class="panel-body">
+	  <pre>Voting period
+    from Nov 2 to Nov 6
+
+Locked Funds:
+    500 USD</pre>
+	  
+	  <div class="panel panel-primary">
+	    <div class="panel-heading">
+	      <h3 class="panel-title">Milestones</h3>
+	    </div>
+	    <div class="panel-body">
+	      <table class="table">
+		<thead>
+		  <tr>
+		    <th>#</th>
+		    <th>Milestone</th>
+		    <th>Budget</th>
+		    <th>Status</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  <tr>
+		    <td>1</td>
+		    <td>Buy this</td>
+		    <td>100 USD</td>
+		    <td><img src="http://www.mytworks.com/wp-content/uploads/2017/07/check-tick-icon-25.png" width="16"></td>
+		  </tr>
+		  <tr>
+		    <td>2</td>
+		    <td>Approve that</td>
+		    <td>240 USD</td>
+		    <td></td>
+		  </tr>		  
+		  <tr>
+		    <td>X</td>
+		    <td>Buffer budget</td>
+		    <td>160 USD</td>
+		    <td></td>
+		  </tr>
+		</tbody>
+	      </table>			
+	    </div>
+	  </div>
+
+	</div>
+      </div>
+    </div>
+    
+  </div>
+  </div>
+
 </div>

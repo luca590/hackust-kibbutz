@@ -32,3 +32,8 @@ angular.module('AniTheme').controller('HomeCtrl', ['$scope', '$timeout', functio
   $scope.setActive(0);
   
 }]);
+
+
+angular.module('AniTheme').controller('ProjCtrl', ['$scope', '$timeout', function ($scope, $timeout) {  
+  $scope.name = "test";
+}]);
