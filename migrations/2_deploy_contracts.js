@@ -1,7 +1,9 @@
 var Community = artifacts.require("./Community.sol");
 
 module.exports = function(deployer) {
-  web3.eth.getAccounts(function(err, res) {
-    deployer.deploy(Community);
-  });
+  deployer.then(() => {
+    return deployer.deploy(Community, 10);
+  }).then(() => {
+    return Community.deployed();
+  })
 };

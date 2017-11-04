@@ -1,0 +1,48 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">      
+      <h2>Projects of {{ community }}</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+
+      <div class="row" ng-repeat="proj in projects">
+	<div class="col-md-12">
+	  <div class="panel panel-default">
+            <div class="panel-body">
+	      <h4>{{ proj.name }}</h4>
+	      {{ proj.description }}
+	      <br /><br />
+	      <table class="table table-striped table-bordered">
+		<tr>
+		  <td>Budget:</td>
+		  <td>{{ proj.budget }}</td>
+		</tr>
+		<tr>
+		  <td>Timeline:</td>
+		  <td>{{ proj.timeline }}</td>
+		</tr>
+		<tr>
+		  <td>Status:</td>
+		  <td>{{ proj.status }}</td>
+		</tr>
+	      </table>
+	    </div>
+	  </div>
+	</div>
+      </div>
+
+      <div class="col-md-6">	
+	<div class="panel panel-default">
+          <div class="panel-body">
+	    <input type="submit" ng-click="getProjects()" class="btn btn-primary addnew" value="Test" />
+	  </div>
+	</div>
+      </div>
+
+    </div>
+      
+  </div> <!-- row end -->
+</div> <!-- fluid container end -->

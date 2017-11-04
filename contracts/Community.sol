@@ -1,4 +1,4 @@
-pragma solidity 0.4.13;
+pragma solidity ^0.4.13;
 
 contract Community {
     uint256 duration; // should use 15000, roughly 3 days (3*24*60*60/17)
