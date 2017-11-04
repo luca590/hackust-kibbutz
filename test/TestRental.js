@@ -89,7 +89,7 @@ contract('Community', (accounts) => {
 	return Community.new({from: creator});
     });
 
-    describe("Test Set 1", () => {
+    describe("Test membership and proposals", () => {
 	let contract;
 
 	beforeEach(() => {
@@ -126,7 +126,7 @@ contract('Community', (accounts) => {
 
 	it('should create new successful proposal', () => {
 	    let origAvailFunds;
-	    return contract.createProposal(budget0, proposer, {from: proposer})
+	    return contract.createProposal(budget0, {from: proposer})
 		.then(proposal => {
 		    return contract.approveProposal(0, false, {from: member0});
 		})
@@ -150,7 +150,7 @@ contract('Community', (accounts) => {
 
 	it('should create new unsuccessful proposal', () => {
 	    let origAvailFunds;
-	    return contract.createProposal(budget0, proposer, {from: proposer})
+	    return contract.createProposal(budget0, {from: proposer})
 		.then(proposal => {
 		    return contract.approveProposal(0, false, {from: member0});
 		})
@@ -168,10 +168,63 @@ contract('Community', (accounts) => {
 		    return contract.availableFunds.call();
 		})
 		.then(funds => {
-		    assert.equal(funds, origAvailFunds);
+		    assert.equal(funds.toNumber(), origAvailFunds.toNumber());
+		});
+	});
+    });
+
+    describe("Test withdrawals", () => {
+	beforeEach(() => {
+	    return Community.new(duration, {from: creator})
+		.then(instance => {
+		    contract = instance;
+		    return contract.deposit({from: member0, value: deposit0});
+		})
+		.then(txn => {
+		    return contract.deposit({from: member1, value: deposit1});
+		})
+	    	.then(txn => {
+		    return contract.deposit({from: member2, value: deposit2});
+		})
+		.then(txn => {
+		    return contract.createProposal(budget0, {from: proposer})
+		})
+		.then(txn => {
+		    return contract.approveProposal(0, true, {from: member0});
+		})
+		.then(txn => {
+		    return contract.approveProposal(0, true, {from: member1});
+		})
+		.then(txn => {
+		    return contract.confirmProposal(0, {from: proposer});
+		})
+	});
+
+	it('should withdraw funds successfully', () => {
+	    let withdrawAmount = 50000;
+	    let origBal;
+	    return contract.withdrawFunds(0, withdrawAmount, member2, {from: member0})
+		.then(txn => {
+		    return contract.approveWithdrawal(0, false, {from: member0});
+		})
+		.then(txn => {
+		    return contract.approveWithdrawal(0, true, {from: member1});
+		})
+		.then(txn => {
+		    return web3.eth.getBalance(member2);
+		})
+		.then(balance => {
+		    origBal = balance;
+		    return contract.withdraw(0, {from: member0});
+		})
+		.then(txn => {
+		    return web3.eth.getBalance(member2);
+		})
+		.then(balance => {
+		    assert.equal(balance.toNumber(), origBal.toNumber()+withdrawAmount);
 		});
 	});
 
-
     });
+    
 });
