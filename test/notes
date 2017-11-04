@@ -1,0 +1,258 @@
+    describe("Test on vacant state", () => {
+	let contract;
+
+	beforeEach(() => {
+	    return Rental.new(deposit, rent, arbitrar)
+		.then(instance => {
+		    contract = instance;
+		});
+	});
+
+	it('should create vacant rental contract by default', () => {
+	    return contract.isVacant.call().then(isVacant => {
+		assert.isTrue(isVacant, "created rental contract is not set vacant");
+	    });
+	});
+
+	it('only landlord should have access', () => {
+	    return contract.hasAccess.call(landlord)
+		.then(hasAccess => {
+		    assert.isTrue(hasAccess, "landlord should have access");
+		    return contract.hasAccess.call(tenant);
+		})
+		.then(hasAccess => {
+		    assert.isFalse(hasAccess, "no one else should have access");
+		});
+	});
+
+	it('should reject rental payments in vacant state', () => {
+	    return expectedExceptionPromise(() => {
+		return contract.payRent({from: tenant, value: rent});
+	    }, 1000000);
+	});
+
+	it('should reject move out in vacant state', () => {
+	    return expectedExceptionPromise(() => {
+		return contract.moveOut({from: tenant});
+	    }, 1000000);
+	});
+
+	it('should reject insufficient deposit', () => {
+	    return expectedExceptionPromise(() => {
+		return contract.moveIn({from: tenant, value: insufficientDeposit});
+	    }, 1000000);
+	});
+
+	it('should move in and receive withdrawable rent', () => {
+	    var initialBlockTime;
+	    return contract.moveIn.call({from: tenant, value: deposit})
+		.then(rentalID => {
+		    assert.equal(rentalID.toString(10).length, 66, "valid tenant with enough deposit not able to move in");
+		    return contract.moveIn({from: tenant, value: deposit});
+		})
+		.then(txn => {
+		    return contract.isVacant.call();
+		}).then(isVacant => {
+		    assert.isFalse(isVacant, "cannot be vacant after tenant moved in");
+		    return contract.paidRentUntilBlock.call();
+		}).then(paidUntil => {
+		    initialBlockTime = paidUntil.toNumber();
+		    return contract.payRent.call({from: tenant, value: rent});
+		}).then(success => {
+		    assert.isTrue(success, "should be able to receive rent payment");
+		    return contract.payRent({from: tenant, value: rent});
+		}).then(txn => {
+		    return contract.paidRentUntilBlock.call();
+		}).then(paidUntil => {
+		    assert.equal(paidUntil.toNumber(), initialBlockTime + 1, "should extend rental by 1 block");
+		    return contract.withdrawRent({from: landlord});
+		});
+	});
+
+    }); // End of test on vaccant state
+
+    describe("Test on occupied state", () => {
+	let contract;
+
+	beforeEach(() => {
+	    return Rental.new(deposit, rent, arbitrar)
+		.then(instance => {
+		    contract = instance;
+		    return contract.moveIn({from: tenant, value: deposit})
+		});
+	});
+
+	it('should be occupied', () => {
+	    return contract.isVacant.call().then(isVacant => {
+		assert.isFalse(isVacant, "cannot be vacant");
+	    });
+	});
+
+	it('only tenant should have access', () => {
+	    return contract.hasAccess.call(tenant)
+		.then(hasAccess => {
+		    assert.isTrue(hasAccess, "tenant should have access");
+		    return contract.hasAccess.call(landlord);
+		})
+		.then(hasAccess => {
+		    assert.isFalse(hasAccess, "landlord should not have access");
+		});
+	});
+
+	it('should reject too much rent', () => {
+	    return expectedExceptionPromise(() => {
+		return contract.payRent({from: tenant, value: tooMuchRent});
+	    });
+	});
+
+	it('anybody should be able to pay but only landlord should be able to withdraw', () => {
+	    return contract.payRent.call({from: randomPerson, value: rent})
+		.then(success => {
+		    assert.isTrue(success, "anybody should be able to pay rent");
+		    return contract.payRent({from: randomPerson, value: rent});
+		}).then(txn => {
+		    return expectedExceptionPromise(() => {
+			return contract.withdrawRent({from: tenant});
+		    }, 1000000);
+		});
+	});
+
+	it('tenant should be able to move out', () => {
+	    return contract.moveOut.call({from: tenant})
+		.then(success => {
+		    assert.isTrue(success, "tenant could not move out");
+		    return contract.payRent({from: tenant, value: rent5x});
+		})
+		.then(txn => {
+		    return contract.moveOut({from: tenant});
+		})
+	    	.then(txn => {
+		    return contract.isVacant.call();
+		})
+		.then(isVacant => {
+		    assert.isTrue(isVacant, "is not vacant after moving out");
+		});
+	});
+
+	it('landlord should not be able to kick out tenant if rent is paid', () => {
+	    let origPaidUntil;
+	    return contract.paidRentUntilBlock.call()
+		.then(paidUntil => {
+		    origPaidUntil = paidUntil.toNumber();
+		    return contract.payRent({from: tenant, value: rent5x});
+		})
+		.then(txn => {
+		    return contract.paidRentUntilBlock.call();
+		})
+		.then(paidUntil => {
+		    assert.equal(paidUntil.toNumber(), origPaidUntil+5, "PaidUntil should increase by 5 blocks");
+		    return expectedExceptionPromise(() => {
+			return contract.kickOut({from: landlord});
+		    }, 1000000);
+		});
+	});
+
+	it('landlord should be able to terminate contract', () => {
+	    return contract.terminate.call()
+		.then(success => {
+		    assert.isTrue(success, "tenant could not move out");
+		    return contract.terminate();
+		})
+	    	.then(txn => {
+		    return contract.isVacant.call();
+		})
+		.then(isVacant => {
+		    assert.isFalse(isVacant, "should still be vacant");
+
+		    // tenant should no longer be able to pay rent
+		    return expectedExceptionPromise(() => {
+			return contract.payRent({from: tenant});
+		    }, 1000000);
+		});
+	});
+
+
+	it('landlord should be able to kick out tenant when pay is due', () => {
+	    // transaction is only there to increment the blockcount
+	    web3.eth.sendTransaction({from: randomPerson, to: landlord, value: web3.toWei(0.00001, "ether")});
+
+	    return contract.kickOut.call({from: landlord})
+		.then(success => {
+		    assert.isTrue(success, "tenant could not be kicked out");
+		    return contract.kickOut({from: landlord});
+		})
+	    	.then(txn => {
+		    return contract.isVacant.call();
+		})
+		.then(isVacant => {
+		    assert.isTrue(isVacant, "is not vacant after kicking out");
+		});
+	});
+	
+    }); // End of test on occupied state
+
+
+    describe("Test on deposit withdrawal", () => {
+    	let contract;
+	let rentalID;
+	
+    	beforeEach(() => {
+    	    return Rental.new(deposit, rent, arbitrar)
+		.then(instance => {
+		    contract = instance;
+		    return contract.moveIn.call({from: tenant, value: deposit});
+		})
+		.then(activeRentalID => {
+		    rentalID = activeRentalID;
+		    return contract.moveIn({from: tenant, value: deposit});
+		});
+    	});
+
+	it('should be able to withdraw deposit as tenant', () => {
+	    return contract.signDeposit(rentalID, true, {from: landlord})
+		.then(txn => {
+		    return contract.signDeposit(rentalID, true, {from: tenant});
+		})
+		.then(txn => {
+		    return contract.withdrawDeposit(rentalID, {from: tenant});
+		});
+	});
+
+      	it('should be able to withdraw deposit as landlord', () => {
+	    return contract.signDeposit(rentalID, false, {from: landlord})
+		.then(txn => {
+		    return contract.signDeposit(rentalID, false, {from: tenant});
+		})
+		.then(txn => {
+		    return contract.claimDeposit(rentalID, {from: landlord});
+		});
+	});
+
+	it('should not be able to withdraw deposit with only one vote', () => {
+	    return contract.signDeposit(rentalID, true, {from: landlord})
+		.then(txn => {
+		    return expectedExceptionPromise(() => {
+			return contract.withdrawDeposit(rentalID, {from: tenant});
+		    }, 1000000);
+		});
+	});
+
+
+	it('should not allow random people to vote', () => {
+	    return expectedExceptionPromise(() => {
+		return contract.signDeposit(rentalID, true, {from: randomPerson})
+	    }, 1000000); 
+	});
+
+	it('should be able to resolve withdrawal with arbitrar', () => {
+	    return contract.signDeposit(rentalID, true, {from: tenant})
+		.then(txn => {
+		    return contract.signDeposit(rentalID, true, {from: arbitrar});
+		})
+		.then(txn => {
+		    return contract.withdrawDeposit(rentalID, {from: tenant});
+		});
+	});
+
+
+    }); // End of deposit withdrawal tests
