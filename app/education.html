@@ -1,0 +1,59 @@
+<h1>Education</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>Proposals</h4>
+                    <input type="submit" class="btn btn-primary addnew" value="Create New Proposal">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Time left</th>
+                                <th>raised/goal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="p in proposals">
+                                <td><a href="#!/proposals/{{p.id}}">{{p.name}}</a></td>
+                                <td>{{p.time}}</td>
+                                <td>{{p.raised}}/{{p.goal}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div style="float:right;">
+            <img src="{{icon}}">
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4>Top Contributors</h4>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Donation Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="c in contributors">
+                                <td>{{c.name}}</td>
+                                <td>{{c.amount}}</td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

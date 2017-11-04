@@ -13,6 +13,9 @@ module.exports = {
       { from: './app/index.html', to: "index.html" },
       { from: './app/home.html', to: "home.html" },
       { from: './app/communities.html', to: "communities.html" },
+      { from: './app/create_community.html', to: "create_community.html" },
+      { from: './app/education.html', to: "education.html"},
+      { from: './app/food.html', to: "food.html"},
     ])
   ],
   module: {

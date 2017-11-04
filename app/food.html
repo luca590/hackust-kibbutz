@@ -1,0 +1,25 @@
+<body ng-app="myApp" ng-cloak ng-controller="ProductController as products" layout="column">
+
+    <div class="product-filter" layout>
+        <h1 flex class="md-headline">Food</h1>
+        <div class="sort md-caption" layout>
+            <div class="collection-sort" layout="column">
+                <md-input-container>
+                    <label>Filter by:</label>
+                    <md-select ng-model="products.filterBy">
+                        <md-option value="{{filter}}" ng-repeat="filter in products.availableFilters">{{filter}}</option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div class="collection-sort" layout="column">
+                <md-input-container>
+                    <label>Sort by:</label>
+                    <md-select ng-model="products.sortedBy">
+                        <md-option value="{{sort}}" ng-repeat="sort in products.availableSorts">{{sort}}</option>
+                    </md-select>
+                </md-input-container>
+            </div>
+        </div>
+    </div>
+
+</body>
