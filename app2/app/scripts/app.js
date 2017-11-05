@@ -155,7 +155,7 @@ angular
         url: '/ui-interface/progressbars',
         parent: 'dashboard',
         templateUrl: 'views/pages/dashboard/ui-elements/progressbar.html?v='+window.app_version,
-        conntroller: 'ProgressDemoCtrl'
+        controller: 'ProgressDemoCtrl'
     })      
     .state('pagination', {
         url: '/ui-interface/pagination',
@@ -177,7 +177,7 @@ angular
         url: '/calendar',
         parent: 'dashboard',
         templateUrl: 'views/pages/dashboard/calendar.html?v='+window.app_version,
-	conntroller: 'ProjCtrl'
+	controller: 'ProjCtrl'
     })
     .state('invoice', {
         url: '/invoice',
